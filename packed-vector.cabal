@@ -1,0 +1,71 @@
+cabal-version:       2.4
+name:                packed-vector
+version:             0.0.0.0
+synopsis:            Variable sized packed vectors
+description:         Variable sized packed vectors
+license:             MIT
+license-file:        LICENSE
+author:              Jannis
+maintainer:          Jannis <overesch.jannis@gmail.com>
+copyright:           2022 Jannis
+category:            Data
+build-type:          Simple
+extra-doc-files:     README.md
+                     CHANGELOG.md
+tested-with:         GHC == 9.2.2
+
+common common-options
+  build-depends:       base ^>= 4.16.0.0
+                     , primitive
+                     , deepseq
+                     , template-haskell
+  
+  ghc-options:         -Wall
+                       -Wcompat
+                       -Widentities
+                       -Wincomplete-uni-patterns
+                       -Wincomplete-record-updates
+                       -Wredundant-constraints
+                       -fhide-source-paths
+                       -Wmissing-export-lists
+                       -Wpartial-fields
+                       -Wmissing-deriving-strategies
+                       -O2
+                       -- Bench with and without when 9.4.1 is out
+                       --fworker-wrapper-cbv
+  default-language:    GHC2021
+library
+  import:              common-options
+  hs-source-dirs:      src
+  exposed-modules:     Data.PackedVector
+                     , Data.PackedVector.Internal
+                     , Data.PackedVector.Mutable
+                     , Data.PackedVector.Mutable.Internal
+                     , Data.Pack
+  other-modules:       Data.PackedVector.Util
+test-suite packed-vector-test
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  other-modules:       Generators
+  build-tool-depends:  sydtest-discover:sydtest-discover
+  build-depends:       packed-vector
+                     , sydtest
+                     , validity
+                     , genvalidity
+                     , genvalidity-sydtest
+                     , QuickCheck
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N
+benchmark packed-vector-benchmark
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      benchmark
+  main-is:             Main.hs
+  build-depends:       tasty-bench
+                     , packed-vector
+                     , random
+                     , vector
+  ghc-options:         -O2
